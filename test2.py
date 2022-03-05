@@ -1,15 +1,19 @@
-
-# Importing required modules
+import cv2
 import os
 import pyttsx3
 import speech_recognition as sr
 from datetime import datetime
-from pycaw.pycaw import AudioUtilities, ISimpleAudioVolume
 from threading import Thread
 import webbrowser
-import alsaaudio
+import winsound
+
+
+vid = cv2.VideoCapture(0)
+camera = False
+video = False
 
 class Gfg:
+    
     def takeCommands(self):
           
           r = sr.Recognizer()
@@ -44,6 +48,7 @@ class Gfg:
  
      
     def quitSelf(self):
+        global camera , video
         self.Speak("")
  
         take = self.takeCommands()
@@ -106,9 +111,40 @@ class Gfg:
             os.system("start notepad")
             self.Speak("start notepad")
 
+        elif 'camera'  in choice or camera :
+                camera = True
+                ret, frame = vid.read()
+                cv2.imshow('frame', frame)
+                if cv2.waitKey(1) & 0xFF == ord('q') or 'off'  in choice  :
+                    camera = False
+                    vid.release()
+                    cv2.destroyAllWindows()
         
-
-
+        elif 'video'  in choice or video :
+                video = True
+                ret, frame = vid.read()
+                cv2.imshow('frame', frame)
+                frame = cv2.flip(frame,0)
+                out.write(frame)
+                if cv2.waitKey(1) & 0xFF == ord('q') or 'off'  in choice  :
+                    video = False
+                    vid.release()
+                    cv2.destroyAllWindows()
+        
+        elif 'video'  in choice or video :
+                if not video :
+                    out = cv2.VideoWriter('output.mp4', -1, 20.0, (640,480))
+                video = True
+                ret, frame = vid.read()
+                cv2.imshow('frame', frame)
+                frame = cv2.flip(frame,0)
+                out.write(frame)
+                if cv2.waitKey(1) & 0xFF == ord('q') or 'off'  in choice  :
+                    video = False
+                    vid.release()
+                    cv2.destroyAllWindows()
+                
+                
 if __name__ == '__main__':
     Maam = Gfg()
     while 1:
